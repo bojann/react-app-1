@@ -1,0 +1,85 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 120px;
+  padding: 20px;
+  color: white;
+}
+
+.PokeList-item {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.App-header-yellow {
+    background-color: #9e9449;
+    height: 300px;
+    padding: 20px;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.red-btn {
+  background: red;
+  color: #000;
+}
+
+.green-btn {
+  background: green;
+  color: #000;
+}
+
+.orange-btn {
+  background: orange;
+  color: #000;
+}
+
+.blue-btn {
+  background: #0078ff;
+  color: #000;
+}
+
+.btn {
+  cursor: pointer;
+  margin: 12px;
+  padding: 9px;
+  border-radius: 5px;
+  width: 100px;
+  height: 40px;
+  display: inline-block;
+}
+.btn:hover {
+    opacity: .8;
+}
+
+.showInline {
+    margin: 20px;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
