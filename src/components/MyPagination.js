@@ -1,10 +1,15 @@
 import React from "react";
 import {Pagination} from 'react-bootstrap/lib/';
+import {Col} from 'react-bootstrap/lib/';
 
 const MyPagination = ({bsSize,activePage,pagesCount,handlePagSelect}) => {
     let paginationItems = [];
 
-    for(let currentPage=0; currentPage < pagesCount; currentPage++) {
+    if(activePage === pagesCount) {
+        return false;
+    }
+
+    for(let currentPage=1; currentPage <= pagesCount; currentPage++) {
         paginationItems.push(
             <Pagination.Item
                 key={currentPage}
@@ -17,9 +22,11 @@ const MyPagination = ({bsSize,activePage,pagesCount,handlePagSelect}) => {
     }
 
     return(
-        <Pagination bsSize={bsSize}>
-            {paginationItems}
-        </Pagination>
+        <Col sm={10} smOffset={1}>
+            <Pagination bsSize={bsSize}>
+                {paginationItems}
+            </Pagination>
+        </Col>
     );
 }
 

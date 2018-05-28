@@ -75,6 +75,22 @@
   font-size: large;
 }
 
+.custom-spinner {
+    display: block;
+     margin: 100px auto;
+}
+
+.PokeList-item {
+    cursor: pointer;
+}
+.PokeList-item:hover {
+    cursor: pointer;
+}
+.PokeList-item:hover {
+    background: #ccc;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

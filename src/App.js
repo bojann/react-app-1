@@ -5,9 +5,8 @@ import logo from './logo.svg';
 import './App.css';
 import PropTypes from 'prop-types';
 import 'whatwg-fetch';
-import PokeList from './components/PokeList'
-import {Col} from 'react-bootstrap/lib';
-import MyPagination from './components/MyPagination';
+import PokemonIndexList from './components/PokemonIndexList';
+import LoadingSpinner from "./components/LoadingSpinner";
 
 class App extends Component {
     constructor(props) {
@@ -15,18 +14,43 @@ class App extends Component {
 
         this.state = {
             pokemonArr: [],
-            activePage: 0,
+            activePage: 1,
             totalPages: 0,
             limit: 40,
+            itemLimitList: [],
+            activeBtn: 40,
             offset: 0,
-            count: 0
+            count: 0,
+            modalShow: false
         };
+
+        this.handleChangeLimit = this.handleChangeLimit.bind(this, props.baseUrl);
         this.loadPokemon = this.loadPokemon.bind(this);
         this.handlePaginationSelect = this.handlePaginationSelect.bind(this, props.baseUrl);
+        this.handleShowModal = this.handleShowModal.bind(this);
+        this.handleHideModal = this.handleHideModal.bind(this);
+    }
+
+    handleChangeLimit(baseUrl, selectedLimit) {
+        console.log("handleChangeLimit: ",selectedLimit);
+        let _selectedLimit = selectedLimit.target.innerText;
+        if( _selectedLimit.toLowerCase() === "all" ) {
+            _selectedLimit = this.state.count;
+        }
+        this.setState((prevState,props) => {
+            return {
+                limit: _selectedLimit,
+                activeBtn: _selectedLimit
+            }
+        });
+        this.loadPokemon(baseUrl, _selectedLimit, this.state.offset);
     }
 
     loadPokemon(baseUrl,limit,offset) {
         let pokeUrl = `/pokemon/?limit=${limit}&offset=${offset}`;
+        this.setState({
+            spinner: true
+        });
 
         fetch(`${baseUrl}${pokeUrl}`)
             .then( (res) => res.json())
@@ -37,9 +61,11 @@ class App extends Component {
                     return {
                         count: resJson.count,
                         totalPages: pages,
-                        pokemonArr:  resJson.results
+                        pokemonArr:  resJson.results,
+                        itemLimitList: [10,40,100,200,"All"],
+                        spinner: false
                     }
-                })
+                });
             })
             .catch( (err) => {
                 console.log(`Parsing faild, ${err}`);
@@ -48,40 +74,65 @@ class App extends Component {
 
     handlePaginationSelect(baseUrl, selectedPage ) {
         console.log("selectedPage2222: ",selectedPage);
-        let newOffset = this.state.limit * selectedPage.target.innerText;
+        let numSelectedPage = selectedPage.target.innerText;
+        let newOffset = this.state.limit * numSelectedPage;
         this.setState((prevState,props) => {
             return{
-                offset: newOffset
+                offset: newOffset,
+                activePage: +numSelectedPage
             };
         });
 
-        this.loadPokemon(`${baseUrl}`, this.state.limit, newOffset);
+        this.loadPokemon(baseUrl, this.state.limit, newOffset);
     }
 
+    handleShowModal(ev) {
+        console.log("handleShowModal   ", ev);
+        this.setState((prevState,props) => {
+            return{
+                modalShow: true
+            }
+        });
+    }
+
+    handleHideModal(ev) {
+        console.log("handleHideModal   ", ev);
+        this.setState((prevState,props) => {
+            return{
+                 modalShow: false
+             }
+        });
+    }
+
+
     render() {
-        console.log("SSSS   ",new PokeList({ListOfPokemon:this.state.pokemonArr}));
         return(
-            <div>
-                <React.StrictMode>
-                    <div className="App-header">
-                        <h1>Pokemon madness</h1>
-                    </div>
-                    <div>
-                        <button onClick={ () => {this.loadPokemon(this.props.baseUrl, this.state.limit, this.state.offset)} }>fetch PokePoke</button>
-                    </div>
-                    <Col sm={8} md={10} smOffset={2} mdOffset={1}>
-                        <PokeList ListOfPokemon={this.state.pokemonArr} />
-                    </Col>
-                    <Col sm={10} smOffset={1}>
-                        <MyPagination
-                            bsSize='small'
-                            activePage={this.state.activePage}
-                            pagesCount={this.state.totalPages}
-                            handlePagSelect={this.handlePaginationSelect}
-                        />
-                    </Col>
-                </React.StrictMode>
-            </div>
+            <React.StrictMode>
+                <div className="App-header">
+                    <h1>Pokemon madness</h1>
+                </div>
+                <div>
+                    <button onClick={ () => {this.loadPokemon(this.props.baseUrl, this.state.limit, this.state.offset)} }>fetch PokePoke</button>
+                </div>
+                <LoadingSpinner
+                    type={this.state.spinner ? 'spinningBubbles' : 'blank'}
+                    color={'#806f00'} />
+
+                <PokemonIndexList
+                    bsStyle={"success"}
+                    activeBtn={this.state.activeBtn}
+                    onclickChangeLimit={this.handleChangeLimit}
+                    pageItemsLimit={this.state.itemLimitList}
+                    pokemonData={this.state.pokemonArr}
+                    bsSize='small'
+                    activePage={this.state.activePage}
+                    pagesCount={this.state.totalPages}
+                    handlePagSelect={this.handlePaginationSelect}
+                    onClickShowModal={this.handleShowModal}
+                    modalShow={this.state.modalShow}
+                    onClickHideModal={this.handleHideModal} />
+
+            </React.StrictMode>
         );
     }
 
