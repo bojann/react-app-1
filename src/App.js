@@ -21,7 +21,8 @@ class App extends Component {
             activeBtn: 40,
             offset: 0,
             count: 0,
-            modalShow: false
+            modalShow: false,
+            pokeSpec: null
         };
 
         this.handleChangeLimit = this.handleChangeLimit.bind(this, props.baseUrl);
@@ -88,22 +89,26 @@ class App extends Component {
         this.loadPokemon(baseUrl, this.state.limit, newOffset);
     }
 
-    handleShowModal(baseUrl, ev) {
-        console.log("handleShowModal   ", ev);
+    handleShowModal(baseUrl, pokemonDOM) {
+        console.log("handleShowModal   ", pokemonDOM);
         let pokeUrlArr = this.state.pokemonArr;
-        let pokeItem = ev.currentTarget.textContent;
+        let pokemonName = pokemonDOM.currentTarget.textContent;
 
         pokeUrlArr.forEach((pokeLink,index)=> {
-            if(pokeLink.name === pokeItem) {
+            if(pokeLink.name === pokemonName) {
             	console.log("Fetch url: ", pokeLink.url);
                 let pokeUrl = pokeLink.url;
-                this.loadPokemon(baseUrl,pokeUrl);
-                this.setState((prevState,props) => {
-                    return{
-                        modalShow: true
-                    }
-                });
-                return false;
+                fetch(pokeUrl)
+                .then((res) => res.json())
+                .then((res) => {
+                    this.setState((prevState,props) => {
+                        return{
+                            pokeSpec: res,
+                            modalShow: true
+                        }
+                    });
+                })
+                .catch((err) => console.error(err));
             }
         });
     }

@@ -11,10 +11,13 @@ console.log('pokemonData:  ',pokeSpec);
                 bsSize="large"
                 aria-labelledby="contained-modal-title-lg" >
                 <Modal.Header closeButton onClick={handleHideModal}>
-                   <Modal.Title id="contained-modal-title-lg">Modal heading</Modal.Title>
+                   <Modal.Title id="contained-modal-title-lg">{pokeSpec.name.toUpperCase()}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-
+                    <div>
+                        <p>Base experience: {pokeSpec.base_experience}</p>
+                        <p></p>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button onClick={handleHideModal}>Close</Button>
