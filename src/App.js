@@ -27,13 +27,14 @@ class App extends Component {
         this.handleChangeLimit = this.handleChangeLimit.bind(this, props.baseUrl);
         this.loadPokemon = this.loadPokemon.bind(this);
         this.handlePaginationSelect = this.handlePaginationSelect.bind(this, props.baseUrl);
-        this.handleShowModal = this.handleShowModal.bind(this);
+        this.handleShowModal = this.handleShowModal.bind(this, props.baseUrl);
         this.handleHideModal = this.handleHideModal.bind(this);
     }
 
     handleChangeLimit(baseUrl, selectedLimit) {
         console.log("handleChangeLimit: ",selectedLimit);
         let _selectedLimit = selectedLimit.target.innerText;
+        let pokeUrl;
         if( _selectedLimit.toLowerCase() === "all" ) {
             _selectedLimit = this.state.count;
         }
@@ -43,11 +44,11 @@ class App extends Component {
                 activeBtn: _selectedLimit
             }
         });
-        this.loadPokemon(baseUrl, _selectedLimit, this.state.offset);
+        pokeUrl = `/pokemon/?limit=${this.state.limit}&offset=${this.state.offset}`;
+        this.loadPokemon(baseUrl, pokeUrl);
     }
 
-    loadPokemon(baseUrl,limit,offset) {
-        let pokeUrl = `/pokemon/?limit=${limit}&offset=${offset}`;
+    loadPokemon(baseUrl,pokeUrl) {
         this.setState({
             spinner: true
         });
@@ -76,6 +77,7 @@ class App extends Component {
         console.log("selectedPage2222: ",selectedPage);
         let numSelectedPage = selectedPage.target.innerText;
         let newOffset = this.state.limit * numSelectedPage;
+        let pokeUrl;
         this.setState((prevState,props) => {
             return{
                 offset: newOffset,
@@ -86,11 +88,22 @@ class App extends Component {
         this.loadPokemon(baseUrl, this.state.limit, newOffset);
     }
 
-    handleShowModal(ev) {
+    handleShowModal(baseUrl, ev) {
         console.log("handleShowModal   ", ev);
-        this.setState((prevState,props) => {
-            return{
-                modalShow: true
+        let pokeUrlArr = this.state.pokemonArr;
+        let pokeItem = ev.currentTarget.textContent;
+
+        pokeUrlArr.forEach((pokeLink,index)=> {
+            if(pokeLink.name === pokeItem) {
+            	console.log("Fetch url: ", pokeLink.url);
+                let pokeUrl = pokeLink.url;
+                this.loadPokemon(baseUrl,pokeUrl);
+                this.setState((prevState,props) => {
+                    return{
+                        modalShow: true
+                    }
+                });
+                return false;
             }
         });
     }
@@ -112,7 +125,7 @@ class App extends Component {
                     <h1>Pokemon madness</h1>
                 </div>
                 <div>
-                    <button onClick={ () => {this.loadPokemon(this.props.baseUrl, this.state.limit, this.state.offset)} }>fetch PokePoke</button>
+                    <button onClick={ () => {this.loadPokemon(this.props.baseUrl, `/pokemon/?limit=${this.state.limit}&offset=${this.state.offset}`)} }>fetch PokePoke</button>
                 </div>
                 <LoadingSpinner
                     type={this.state.spinner ? 'spinningBubbles' : 'blank'}
@@ -130,7 +143,8 @@ class App extends Component {
                     handlePagSelect={this.handlePaginationSelect}
                     onClickShowModal={this.handleShowModal}
                     modalShow={this.state.modalShow}
-                    onClickHideModal={this.handleHideModal} />
+                    onClickHideModal={this.handleHideModal}
+                    pokeSpec={this.state.pokeSpec} />
 
             </React.StrictMode>
         );

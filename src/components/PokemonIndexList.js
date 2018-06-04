@@ -16,7 +16,8 @@ const PokemonIndexList = ({
     handlePagSelect,
     onClickShowModal,
     modalShow,
-    onClickHideModal}) => {
+    onClickHideModal,
+    pokeSpec }) => {
 
     return(
         <div>
@@ -32,7 +33,8 @@ const PokemonIndexList = ({
 
             <PokeModalBox
                 modalShow={modalShow}
-                handleHideModal={onClickHideModal}/>
+                handleHideModal={onClickHideModal}
+                pokeSpec={pokeSpec} />
 
             <MyPagination
                 bsSize='small'

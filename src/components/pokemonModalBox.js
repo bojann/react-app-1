@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Modal,Button} from 'react-bootstrap/lib/';
 
-const PokeModalBox = ({modalShow,handleHideModal}) => {
+const PokeModalBox = ({modalShow, pokeSpec, handleHideModal}) => {
+console.log('pokemonData:  ',pokeSpec);
     return (
         <div>
             <Modal
